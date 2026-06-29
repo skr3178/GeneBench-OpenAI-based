@@ -155,3 +155,34 @@ effect/mean differ from the Appendix's specific realization because the DGP was
 re-tuned (β ≈ 11, mean ≈ 121).
 
 **Status: FIXED and validated.** (Repo test suite: 18 passing.)
+
+## 9. End-to-end blind re-validation (the fix confirmed by a real agent)
+
+After the fix, a second **blind agent** (isolated workspace, no access to the
+repo, the reference solution, the paper, or the truth file) solved a held-out
+realization (seed 246810) and was graded by the harness:
+
+| Field | Agent | Truth | Result |
+|---|---|---|---|
+| lead_variant_index | 42 | 42 | PASS (exact) |
+| lead_beta_mgdl | 10.66 | 10.73 | PASS (\|Δ\|=0.07 ≤ 0.40) |
+| source_mean_untreated_ldl_mgdl | 120.61 | 120.43 | PASS (\|Δ\|=0.18 ≤ 1.00) |
+
+**Overall: PASS** — and solved via the intended inferential chain:
+1. recognized capillary is treatment-distorted and reconstructed untreated LDL
+   with the audit-calibrated treatment add-back (noting that conditioning on
+   refill in-cohort is confounded, so the add-back must come from the audit);
+2. used capillary (all 520) to avoid attendance selection bias, rejecting the
+   attendee-only fasting lab;
+3. excluded v19 (HWE) and v18 (informative missingness) before ranking.
+
+**Before/after — the decisive confirmation:**
+- On the *broken* problem, a competent agent's defensible analysis **FAILED**
+  (the grader was miscalibrated, §1–5).
+- On the *fixed* problem, a competent blind agent's defensible analysis
+  **PASSES**, having genuinely navigated all three decision points.
+
+This is the cleanest possible evidence that the fix turned the problem into a
+fair benchmark: hard enough to require the full inferential chain, not so
+miscalibrated that correct work fails. (One trajectory = 1/1, not a rate; a
+pass-rate comparison to the paper's 42.4% requires repeated independent runs.)
