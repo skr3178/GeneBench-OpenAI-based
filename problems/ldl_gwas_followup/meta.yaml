@@ -36,9 +36,12 @@ graded_fields:
     type: float
     tolerance: 1.00          # +/- mg/dL (Appendix: tolerance for the mean)
 
-# Reference values from the paper's realized dataset, for cross-checking our DGP
-# transcription (our regenerated data will differ slightly per seed).
+# The DGP was re-tuned from the literal Appendix so all three decision points are
+# necessary AND the correct estimator is low-variance enough to grade at these
+# tolerances (validated over 30 seeds: defensible analyses converge, every
+# shortcut fails by clear margins). See docs/validation_findings.md.
+# The causal variant (42) is unchanged; the realized effect/mean differ from the
+# Appendix's specific realization (9.96 / 123.09) because the DGP was re-tuned.
 paper_reference:
   lead_variant_index: 42
-  lead_beta_mgdl: 9.96
-  source_mean_untreated_ldl_mgdl: 123.09
+  appendix_realization_note: "Appendix reported beta 9.96, mean 123.09 for its own seed; re-tuned DGP yields ~11 / ~121."

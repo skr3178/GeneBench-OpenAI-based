@@ -31,14 +31,14 @@ def prepared(tmp_path_factory):
     return problem, data_dir, truth, full_truth
 
 
-def test_ground_truth_matches_paper(prepared):
+def test_ground_truth_is_sane(prepared):
     _, _, truth, full = prepared
     assert truth["lead_variant_index"] == 42
-    # realized per-allele effect close to the paper's 9.96 mg/dL
-    assert 9.0 <= truth["lead_beta_mgdl"] <= 11.0
-    # invited-cohort mean in the plausible neighborhood of the paper's 123.09
+    # realized per-allele effect near the causal coefficient (10.8 mg/dL)
+    assert 9.0 <= truth["lead_beta_mgdl"] <= 13.0
+    # invited-cohort mean untreated LDL in a plausible range
     assert 118.0 <= truth["source_mean_untreated_ldl_mgdl"] <= 126.0
-    # engineered QC artifacts present
+    # engineered QC artifacts present (full-cohort)
     diag = full["_diagnostics"]
     assert diag["call_rate_v18"] < 0.95          # fails call-rate QC
     assert diag["hwe_p_v19"] < 1e-6              # fails Hardy-Weinberg QC
@@ -52,7 +52,8 @@ def test_reference_solution_passes(prepared):
     assert result.passed, result.to_dict()
 
 
-@pytest.mark.parametrize("name", ["naive_lab", "skip_ipw", "skip_qc", "skip_hwe"])
+@pytest.mark.parametrize("name", ["capillary_direct", "attendee_only", "naive_lab",
+                                  "skip_qc", "skip_hwe"])
 def test_ablations_fail(prepared, name):
     problem, data_dir, truth, _ = prepared
     ablations = problem.run_ablations(data_dir)

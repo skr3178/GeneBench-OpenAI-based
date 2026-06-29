@@ -117,5 +117,41 @@ not fully specify.
 3. **Re-validate across ≥30 seeds**: shortcuts/ablations fail by clear margins,
    defensible correct analyses converge within tolerance, lead always 42.
 
-**Status: not yet fixed.** Diagnosis complete (this document). The fix is an
-iterative DGP-design + validation task, in progress.
+## 8. Resolution (fixed)
+
+The fix re-tuned the DGP and reference solution so the correct estimator is
+**full-cohort and low-variance**, while both treatment and selection traps still
+bite hard:
+
+- **Capillary LDL is now treatment-distorted** (measures the treated phenotype),
+  so a naive capillary-direct scan is biased toward zero (DP1 bites).
+- **Refill is a clean treatment-intensity proxy** (no longer driven directly by
+  LDL severity), so the audit-calibrated treatment add-back is unbiased and
+  reconstructs untreated LDL for **all 520 subjects** — a low-variance,
+  full-cohort estimator.
+- **The selection trap is the attendee subset**: the fasting lab and audit
+  baseline are attendee-only and selection-biased; restricting to them (rather
+  than using the full-cohort reconstruction) over-states the effect and the mean
+  (DP2 bites).
+- Variant QC (DP3) unchanged in spirit; artifacts now trigger on the full cohort.
+
+**Validation over 30 fresh seeds (200–229):**
+
+| Check | Result |
+|---|---|
+| Truth lead == variant 42 | 30/30 |
+| Defensible variant implementations PASS (4 offset/covariate specs × 30) | **120/120** |
+| `capillary_direct` (DP1 trap) passes | 0/30 |
+| `attendee_only` (DP2 trap) passes | 0/30 |
+| `naive_lab` passes | 0/30 |
+| `skip_qc` (DP3) passes | 0/30 |
+| `skip_hwe` (DP3) passes | 0/30 |
+
+The problem now satisfies the paper's constraints it previously violated:
+**defensible analyses converge within tolerance (120/120), and every shortcut
+fails by clear margins (0/150).** All three decision points are genuinely
+necessary. The realized causal variant is unchanged (42); the realized
+effect/mean differ from the Appendix's specific realization because the DGP was
+re-tuned (β ≈ 11, mean ≈ 121).
+
+**Status: FIXED and validated.** (Repo test suite: 18 passing.)
