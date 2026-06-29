@@ -49,6 +49,24 @@ def cmd_grade(args):
     raise SystemExit(0 if result.passed else 1)
 
 
+def cmd_run(args):
+    from genebench.agent import AgentConfig
+    from genebench.models.anthropic_client import AnthropicClient
+    from genebench.runner import run_problem
+
+    prob = _resolve_problem(args.problem)
+    model = AnthropicClient(model=args.model, effort=args.effort)
+    config = AgentConfig(max_steps=args.max_steps)
+    print(f"Running {prob.id} with {model.name} ({args.reps} reps)...")
+    result = run_problem(prob, model, reps=args.reps, base_seed=args.seed, config=config)
+    print(f"\npass rate: {result.pass_rate:.1%}  "
+          f"({sum(r.passed for r in result.records)}/{result.n})  "
+          f"mean out-tokens: {result.mean_output_tokens:.0f}")
+    for r in result.records:
+        print(json.dumps({"rep": r.rep, "passed": r.passed, "status": r.status,
+                          "answer": r.answer, "truth": r.truth}, default=str))
+
+
 def cmd_verify(args):
     prob = _resolve_problem(args.problem)
     outdir = Path(args.outdir)
@@ -95,6 +113,15 @@ def main(argv=None):
     gr.add_argument("data_dir")
     gr.add_argument("answer")
     gr.set_defaults(func=cmd_grade)
+
+    r = sub.add_parser("run", help="run an LLM agent on a problem and grade it")
+    r.add_argument("problem")
+    r.add_argument("--model", default="claude-opus-4-8")
+    r.add_argument("--effort", default="high", choices=["low", "medium", "high", "xhigh", "max"])
+    r.add_argument("--reps", type=int, default=5)
+    r.add_argument("--seed", type=int, default=1000)
+    r.add_argument("--max-steps", type=int, default=30)
+    r.set_defaults(func=cmd_run)
 
     v = sub.add_parser("verify", help="reference passes + ablations fail")
     v.add_argument("problem")

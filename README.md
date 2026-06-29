@@ -25,6 +25,10 @@ against a recoverable ground truth under absolute tolerances.
   Recovers **variant 42, β ≈ 10.0 mg/dL** (paper 9.96), invited-cohort mean
   ≈ 122 (paper 123.09). All four wrong-path ablations fail grading.
 - **Harness core** — `Problem` spec/loader, binary `grade()`, and a CLI.
+- **Agent loop** — a local subprocess sandbox (scientific Python, files staged in),
+  a ReAct agent that runs `run_python` / `run_bash` and writes `eval_answer.json`,
+  a **Claude adapter** (adaptive thinking + effort), and an N-replicate runner that
+  grades each attempt and reports pass rate + token usage.
 
 ## Quickstart
 
@@ -40,6 +44,12 @@ ls _data            # cohort.tsv.gz  audit.tsv.gz  variants.tsv.gz  (+ truth.jso
 
 # run the reference solution and grade it; check ablations all fail
 genebench verify ldl_gwas_followup
+```
+
+Run an LLM agent on the problem (needs `pip install anthropic` and `ANTHROPIC_API_KEY`):
+
+```bash
+genebench run ldl_gwas_followup --model claude-opus-4-8 --effort high --reps 5
 ```
 
 Grade an arbitrary answer file:
@@ -58,7 +68,8 @@ PYTHONPATH= PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
 ## Layout
 
 ```
-genebench/            harness: problem.py, grader.py, cli.py  (sandbox/agent: WIP)
+genebench/            harness: problem.py, grader.py, cli.py,
+                      agent.py, runner.py, sandbox/, models/
 problems/
   ldl_gwas_followup/  meta.yaml, prompt.txt, generate.py,
                       reference_solution.py, ablations.py, tests/
@@ -68,7 +79,7 @@ PLAN.md               full implementation plan and problem inventory
 
 ## Roadmap
 
-- Local execution sandbox + agent loop (Anthropic/Claude adapter first), then Docker.
+- Docker sandbox backend (`--network none` + pinned image) behind the same interface.
 - Aggregation/metrics matching the paper (mean pass rate, hierarchical bootstrap
   CIs, regime distribution, pass-rate vs decision-points).
-- Additional authored problems via the SDK.
+- Additional model adapters (OpenAI-compatible, Gemini) and authored problems via the SDK.
