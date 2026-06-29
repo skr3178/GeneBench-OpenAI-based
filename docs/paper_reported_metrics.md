@@ -30,6 +30,7 @@ Machine-readable copy: [`paper_reported_metrics.json`](paper_reported_metrics.js
 | Best Pro run | GPT-5.5 Pro — **33.2%** |
 | Best external (non-GPT) | Gemini 3.1 Pro `high` — **11.2%** |
 | LDL case-study realized truth | variant **42**, β **9.96** mg/dL (±0.40), mean **123.09** mg/dL (±1.00) |
+| **LDL problem reported score** (Supp. Table 1) | **GPT-5.5 `xhigh` = 42.4%** (decision points = 3) — the *only* per-problem model number disclosed, and the single figure a run of **this** repo (`genebench run ldl_gwas_followup`) can be compared against |
 
 ## Supplementary Table 2 — overall pass rates
 

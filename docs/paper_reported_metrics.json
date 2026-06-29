@@ -11,6 +11,13 @@
       "lead_beta_mgdl": 9.96,
       "source_mean_untreated_ldl_mgdl": 123.09,
       "tolerances": {"lead_beta_mgdl": 0.40, "source_mean_untreated_ldl_mgdl": 1.00}
+    },
+    "ldl_case_study_reported_pass_rate": {
+      "note": "The ONLY per-problem model score the paper discloses for the LDL GWAS follow-up problem (Supplementary Table 1). This is the single paper number a run of this repo can be compared against. GPT-5.5 is reported at the xhigh reasoning setting over repeated runs.",
+      "model": "GPT-5.5",
+      "effort": "xhigh",
+      "decision_points": 3,
+      "pass_rate_pct": 42.4
     }
   },
   "headline": {
