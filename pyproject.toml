@@ -1,0 +1,37 @@
+[project]
+name = "genebench"
+version = "0.1.0"
+description = "Open harness for GeneBench-style multi-stage genomics inference problems (Li & Ho, 2026)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "statsmodels",
+    "lifelines",
+    "matplotlib",
+    "seaborn",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+anthropic = ["anthropic"]
+
+[project.scripts]
+genebench = "genebench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["genebench*"]
+
+[tool.pytest.ini_options]
+# Isolate from system pytest plugins (e.g. ROS on PYTHONPATH). If your shell
+# injects PYTHONPATH, also run with: PYTHONPATH= PYTEST_DISABLE_PLUGIN_AUTOLOAD=1
+testpaths = ["tests", "problems"]
+addopts = "-p no:cacheprovider"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

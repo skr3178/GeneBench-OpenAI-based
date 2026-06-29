@@ -1,0 +1,6 @@
+Estimate the additive association of genotype with untreated fasting LDL-C in the invited cohort.
+
+Use the agent-visible files only. 'lead_variant_index' is the 1-based row index in 'variants.tsv.gz' for the strongest association signal. 'lead_beta_mgdl' is that variant's additive per-allele effect on untreated fasting LDL-C in mg/dL in the invited cohort. 'source_mean_untreated_ldl_mgdl' is the invited-cohort mean untreated fasting LDL-C in mg/dL.
+
+Write 'eval_answer.json' with exactly this schema:
+{"answer": {"lead_variant_index": <int>, "lead_beta_mgdl": <float>, "source_mean_untreated_ldl_mgdl": <float>}, "reasoning": "<description of method and QC>"}

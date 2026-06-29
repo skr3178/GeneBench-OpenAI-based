@@ -1,0 +1,44 @@
+id: ldl_gwas_followup
+title: LDL-C GWAS follow-up
+domain: statistical genetics
+subdomain: association & correction
+decision_points: 3
+source: "GeneBench (Li & Ho, 2026), Appendix LDL GWAS Case Study"
+
+# Files staged into the agent's sandbox (relative to the generated data dir).
+staged_files:
+  - cohort.tsv.gz
+  - audit.tsv.gz
+  - variants.tsv.gz
+
+# Required output written by the agent.
+answer_file: eval_answer.json
+
+# JSON schema the agent must satisfy (informational; enforced loosely by the grader).
+schema:
+  answer:
+    lead_variant_index: int
+    lead_beta_mgdl: float
+    source_mean_untreated_ldl_mgdl: float
+  reasoning: str
+
+# Binary grading: a run passes iff EVERY graded field passes its check.
+# Ground truth is computed by reference_solution.py on the generated data
+# (the paper's "recoverable realized-data target"), not hardcoded.
+graded_fields:
+  - name: lead_variant_index
+    type: int
+    match: exact
+  - name: lead_beta_mgdl
+    type: float
+    tolerance: 0.40          # +/- mg/dL (Appendix: tolerance for the effect estimate)
+  - name: source_mean_untreated_ldl_mgdl
+    type: float
+    tolerance: 1.00          # +/- mg/dL (Appendix: tolerance for the mean)
+
+# Reference values from the paper's realized dataset, for cross-checking our DGP
+# transcription (our regenerated data will differ slightly per seed).
+paper_reference:
+  lead_variant_index: 42
+  lead_beta_mgdl: 9.96
+  source_mean_untreated_ldl_mgdl: 123.09
